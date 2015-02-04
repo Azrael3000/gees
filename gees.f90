@@ -40,9 +40,9 @@
 program gees
   use mod_fluxcalc
   implicit none
-  real(8), dimension(:),allocatable :: p,v
-  real(8), dimension(:,:), allocatable :: u,f, utild, uold
-  real(8) :: temps, dt, tend, dx, odt, pi, c0
+  real(dp), dimension(:),allocatable :: p,v
+  real(dp), dimension(:,:), allocatable :: u,f, utild, uold
+  real(dp) :: temps, dt, tend, dx, odt, pi, c0
   integer :: i, nt, it, nx, io, lout
   character(len=13) :: fname
 

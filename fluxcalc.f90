@@ -22,20 +22,23 @@
 
 module mod_fluxcalc
 
+  ! dp is for the kind definition of the reals, ensuring double precision
+  integer, parameter :: dp = selected_real_kind(15, 307)
+
 contains
 
   subroutine fluxcalc(u, v, f, nx, c0)
     implicit none
     integer, intent(in) :: nx
-    real(8), dimension(-1:nx+1), intent(inout) :: v
-    real(8), dimension(-1:nx+1,2), intent(inout) :: u
-    real(8), dimension(nx,2), intent(inout) :: f
-    real(8), intent(in) :: c0
+    real(dp), dimension(-1:nx+1), intent(inout) :: v
+    real(dp), dimension(-1:nx+1,2), intent(inout) :: u
+    real(dp), dimension(nx,2), intent(inout) :: f
+    real(dp), intent(in) :: c0
 
     integer :: i, j
-    real(8), dimension(2) :: ur, ul
-    real(8) :: a, pl, pr, nom, denom, ri, rim1
-    real(8), dimension(4) :: lam
+    real(dp), dimension(2) :: ur, ul
+    real(dp) :: a, pl, pr, nom, denom, ri, rim1
+    real(dp), dimension(4) :: lam
 
     ! calculate flux at midpoints, f(i) = f_{i-1/2}
     do i=1,nx
@@ -98,9 +101,9 @@ contains
   end subroutine fluxcalc
 
   ! flux limiter
-  real(8) function phi(r)
+  real(dp) function phi(r)
     implicit none
-    real(8), intent(in) :: r
+    real(dp), intent(in) :: r
 
     phi = 0d0
     ! ospre flux limiter phi(r) = \frac{1.5*(r^2+r)}{r^2+r+1}
@@ -113,12 +116,12 @@ contains
   end function phi
 
   ! eigenvalue calc
-  real(8) function ev(v,u,c0,i,sgn,nx)
+  real(dp) function ev(v,u,c0,i,sgn,nx)
     implicit none
-    real(8), dimension(-1:nx+1), intent(inout) :: v
-    real(8), dimension(-1:nx+1,2), intent(inout) :: u
+    real(dp), dimension(-1:nx+1), intent(inout) :: v
+    real(dp), dimension(-1:nx+1,2), intent(inout) :: u
     integer, intent(in) :: i, nx
-    real(8), intent(in) :: sgn, c0
+    real(dp), intent(in) :: sgn, c0
 
     ! calculate root of characteristic equation
 
@@ -131,9 +134,9 @@ contains
   subroutine bcs(u,p,v,nx,c0)
     implicit none
     integer, intent(in) :: nx
-    real(8), intent(in) :: c0
-    real(8), dimension(-1:nx+1), intent(inout) :: p,v
-    real(8), dimension(-1:nx+1,2), intent(inout) :: u
+    real(dp), intent(in) :: c0
+    real(dp), dimension(-1:nx+1), intent(inout) :: p,v
+    real(dp), dimension(-1:nx+1,2), intent(inout) :: u
 
     integer :: i
 
