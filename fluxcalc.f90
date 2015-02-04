@@ -25,6 +25,13 @@ module mod_fluxcalc
   ! dp is for the kind definition of the reals, ensuring double precision
   integer, parameter :: dp = selected_real_kind(15, 307)
 
+  ! public variables
+  public :: dp
+  ! public functions
+  public :: fluxcalc, bcs
+  ! private functions
+  private :: phi, ev
+
 contains
 
   subroutine fluxcalc(u, v, f, nx, c0)
