@@ -81,7 +81,7 @@ program gees
   do i=1,nx-1
     u(i,1) = 1d3+cos(2*pi*real(i,8)/real(nx,8))*10d0 !rho
     u(i,2) = 0d0 !u(i,1)*0.1d0*sin(2*pi*real(i,8)/real(nx,8)) !rho*v
-  enddo
+  end do
   ! set p,v from u and calcuate boundary values at bdry and ghost cells
   call bcs(u,p,v,nx,c0)
   ! file output index
@@ -95,7 +95,7 @@ program gees
   write(800,*) 'xpos,p,rho,v'
   do i=-1,nx+1
     write(800,'(4(a1,e20.10))') ' ', real(i,8)/real(nx,8),',', p(i),',', u(i,1),',', v(i)
-  enddo
+  end do
   close(800)
   io = io+1
 
@@ -105,7 +105,7 @@ program gees
     if(real(nt*lout)*0.1d0.lt.real(it))then
       write(*,*) 'Calculated ', int(real(lout)*10.), '%'
       lout = lout + 1
-    endif
+    end if
     temps = temps + dt
     uold = u
 
@@ -119,7 +119,7 @@ program gees
       u(i,:) = uold(i,:) + utild(i,:)/6d0
       ! utild = uold^n + 1/2 k_1
       utild(i,:) = uold(i,:) + utild(i,:)*0.5d0
-    enddo
+    end do
     ! calculate p,v + bcs for uold + 1/2 k1 = utild
     call bcs(utild,p,v,nx,c0)
 
@@ -133,7 +133,7 @@ program gees
       u(i,:) = u(i,:) + utild(i,:)/6d0
       ! utild = uold^n + 1/2 k_2
       utild(i,:) = uold(i,:) + utild(i,:)*0.5d0
-    enddo
+    end do
     ! calculate p,v + bcs for uold + 1/2 k2 = utild
     call bcs(utild,p,v,nx,c0)
 
@@ -147,7 +147,7 @@ program gees
       u(i,:) = u(i,:) + utild(i,:)/6d0
       ! utild = uold^n + k_3
       utild(i,:) = uold(i,:) + utild(i,:)
-    enddo
+    end do
     ! calculate p,v + bcs for uold + k3 = utild
     call bcs(utild,p,v,nx,c0)
 
@@ -159,7 +159,7 @@ program gees
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
       ! u^n = u^n + 1/6 k4
       u(i,:) = u(i,:) + utild(i,:)/6d0
-    enddo
+    end do
     ! calculate p,v + bcs for (uold + k1 + k2 + k3 + k4)/6 = u
     call bcs(u,p,v,nx,c0)
 
@@ -170,11 +170,11 @@ program gees
       write(800,*) 'xpos,p,rho,v'
       do i=-1,nx+1
         write(800,'(4(a1,e20.10))') ' ', real(i,8)/real(nx,8),',', p(i),',', u(i,1),',', v(i)
-      enddo
+      end do
       close(800)
       io = io + 1
-    endif
-  enddo
+    end if
+  end do
 
   write(*,*) 'Calculation finished. Goodbye.'
 

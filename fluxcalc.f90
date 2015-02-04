@@ -53,7 +53,7 @@
           elseif(nom.lt.-1d-14.and.abs(denom).lt.1d-14)then ! nom < 0 => r = 0
             nom = -1d14
             denom = 1d0
-          endif
+          end if
           ri = nom/denom
           ! calculate r_{i-1} = \frac{u_{i-1}-u_{i-2}}{u_i-u_{i-1}}
           nom   = (u(i-1,j)-u(i-2,j))
@@ -68,13 +68,13 @@
           elseif(nom.lt.-1d-14.and.abs(denom).lt.1d-14)then
             nom = -1d14
             denom = 1d0
-          endif
+          end if
           rim1 = nom/denom
           ! u^l_{i-1/2} = u_{i-1} + 0.5*phi(r_{i-1})*(u_i-u_{i-1})
           ul(j) = u(i-1,j)+0.5d0*phi(rim1)*(u(i  ,j)-u(i-1,j))
           ! u^r_{i-1/2} = u_i + 0.5*phi(r_i)*(u_{i+1}-u_i)
           ur(j) = u(i,j)  -0.5d0*phi(ri  )*(u(i+1,j)-u(i  ,j))
-        enddo
+        end do
         ! calculate eigenvalues of \frac{\partial F}{\parial u} at u_{i-1}
         lam(1) = ev(v,u,c0,i-1, 1d0,nx)
         lam(2) = ev(v,u,c0,i-1,-1d0,nx)
@@ -93,7 +93,7 @@
         f(i,1) = 0.5d0*(ur(2)+ul(2)-a*(ur(1)-ul(1)))
         ! F_2 = p + rho * v**2 = p + \frac{u_2**2}{u_1}
         f(i,2) = 0.5d0*(pr+ur(2)**2/ur(1)+pl+ul(2)**2/ul(1)-a*(ur(2)-ul(2)))
-      enddo
+      end do
 
     end subroutine fluxcalc
 
@@ -106,7 +106,7 @@
       ! ospre flux limiter phi(r) = \frac{1.5*(r^2+r)}{r^2+r+1}
       if(r.gt.0d0)then
         phi = 1.5d0*(r**2+r)/(r**2+r+1d0)
-      endif
+      end if
 
       ! van leer
     !  phi = (r+abs(r))/(1d0+abs(r))
@@ -143,7 +143,7 @@
         v(i) = u(i,2)/u(i,1)
         ! p = \frac{rho_0 c0^2}{xi}*((\frac{\rho}{\rho_0})^xi-1), (xi=7, rho_0=1d3)
         p(i) = 1d3*c0**2/7d0*((u(i,1)/1d3)**7d0-1d0)
-      enddo
+      end do
 
       ! calculate boundary conditions
       !  note: for periodic boundary conditions set 
