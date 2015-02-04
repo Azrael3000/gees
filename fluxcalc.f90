@@ -95,7 +95,7 @@
         f(i,2) = 0.5d0*(pr+ur(2)**2/ur(1)+pl+ul(2)**2/ul(1)-a*(ur(2)-ul(2)))
       enddo
 
-    end subroutine
+    end subroutine fluxcalc
 
     ! flux limiter
     real(8) function phi(r)
@@ -110,7 +110,7 @@
 
       ! van leer
     !  phi = (r+abs(r))/(1d0+abs(r))
-    end function
+    end function phi
 
     ! eigenvalue calc
     real(8) function ev(v,u,c0,i,sgn,nx)
@@ -126,7 +126,7 @@
       ev = 0.5d0*(3d0*v(i)+sgn*sqrt(5d0*v(i)**2+4d0*c0**2*(u(i,1)/1d3)**6))
 
       return
-    end function
+    end function ev
 
     subroutine bcs(u,p,v,nx,c0)
       implicit none
@@ -169,6 +169,6 @@
       u(nx,2) = u(nx,1)*v(nx)
       u(nx+1,2) = u(nx+1,1)*v(nx+1)
 
-    end subroutine
+    end subroutine bcs
 
-    end module
+    end module mod_fluxcalc
