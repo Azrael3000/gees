@@ -132,8 +132,8 @@ program gees
     do i=1,nx-1
       ! calc k2 = -dt/dx(f(utild,i+1/2) - f(utild,i-1/2))
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
-      ! u^n = u^n + 1/6 k2
-      u(i,:) = u(i,:) + utild(i,:)/6d0
+      ! u^n = u^n + 1/3 k2
+      u(i,:) = u(i,:) + utild(i,:)/3d0
       ! utild = uold^n + 1/2 k_2
       utild(i,:) = uold(i,:) + utild(i,:)*0.5d0
     end do
@@ -146,8 +146,8 @@ program gees
     do i=1,nx-1
       ! calc k3 = -dt/dx(f(utild,i+1/2) - f(utild,i-1/2))
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
-      ! u^n = u^n + 1/6 k3
-      u(i,:) = u(i,:) + utild(i,:)/6d0
+      ! u^n = u^n + 1/3 k3
+      u(i,:) = u(i,:) + utild(i,:)/3d0
       ! utild = uold^n + k_3
       utild(i,:) = uold(i,:) + utild(i,:)
     end do
@@ -163,7 +163,7 @@ program gees
       ! u^n = u^n + 1/6 k4
       u(i,:) = u(i,:) + utild(i,:)/6d0
     end do
-    ! calculate p,v + bcs for (uold + k1 + k2 + k3 + k4)/6 = u
+    ! calculate p,v + bcs for uold + dt*(k1 + 2*k2 + 2*k3 + k4)/6 = u
     call bcs(u,p,v,nx,c0)
 
     ! output
