@@ -5,7 +5,7 @@
 !=====================================================
 !
 ! Written 2012 by Arno Mayrhofer (www.amconception.de)
-! 
+!
 !=====================================================
 !
 ! Copyright 2012 Arno Mayrhofer
@@ -136,7 +136,7 @@ program gees
     enddo
     ! calculate p,v + bcs for uold + 1/2 k2 = utild
     call bcs(utild,p,v,nx,c0)
-    
+
     ! Third Runge-Kutta step
     ! calculate flux at mid points using utild
     call fluxcalc(utild,v,f,nx,c0)
