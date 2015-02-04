@@ -123,7 +123,7 @@ contains
     end if
 
     ! van leer
-  !  phi = (r+abs(r))/(1d0+abs(r))
+    !  phi = (r+abs(r))/(1d0+abs(r))
   end function phi
 
   ! eigenvalue calc
