@@ -35,6 +35,15 @@ module mod_fluxcalc
 contains
 
   subroutine fluxcalc(u, v, f, nx, c0)
+    ! Task:
+    !   Compute flux at midpoints
+    ! Input:
+    !   u  - state vector at center
+    !   v  - velocity at center
+    !   nx - number of gridpoints
+    !   c0 - speed of sound
+    ! Output:
+    !   f  - fluxes at midpoints
 
     implicit none
 
@@ -109,8 +118,13 @@ contains
 
   end subroutine fluxcalc
 
-  ! flux limiter
   real(dp) function phi(r)
+    ! Task:
+    !   Compute limiter function for fluxes using the Ospre limiter
+    ! Input:
+    !   r    - ratio of successive gradients
+    ! Output:
+    !   phi  - limiter
 
     implicit none
 
@@ -126,8 +140,18 @@ contains
     !  phi = (r+abs(r))/(1d0+abs(r))
   end function phi
 
-  ! eigenvalue calc
   real(dp) function ev(v,u,c0,i,sgn,nx)
+    ! Task:
+    !   Compute the eigenvalues of the jacobian
+    ! Input:
+    !   v    - velocity
+    !   u    - state vector
+    !   c0   - speed of sound
+    !   i    - index of cell to operate on
+    !   sgn  - sign of the root
+    !   nx   - number of gridpoints
+    ! Output:
+    !   ev   - the eigenvalue
 
     implicit none
 
@@ -145,6 +169,16 @@ contains
   end function ev
 
   subroutine bcs(u,p,v,nx,c0)
+    ! Task:
+    !   Update the velocity and pressure globally from the state vector
+    !   Compute the boundary conditions on the ghost cells
+    ! Input:
+    !   u    - state vector
+    !   nx   - number of gridpoints
+    !   c0   - speed of sound
+    ! Output:
+    !   p   - pressure
+    !   v   - velocity
 
     implicit none
 
