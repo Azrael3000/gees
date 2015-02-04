@@ -38,8 +38,11 @@
 !=====================================================
 
 program gees
+
   use mod_fluxcalc
+
   implicit none
+
   real(dp), dimension(:),allocatable :: p,v
   real(dp), dimension(:,:), allocatable :: u,f, utild, uold
   real(dp) :: temps, dt, tend, dx, odt, pi, c0

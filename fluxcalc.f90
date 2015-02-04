@@ -35,7 +35,9 @@ module mod_fluxcalc
 contains
 
   subroutine fluxcalc(u, v, f, nx, c0)
+
     implicit none
+
     integer, intent(in) :: nx
     real(dp), dimension(-1:nx+1), intent(inout) :: v
     real(dp), dimension(-1:nx+1,2), intent(inout) :: u
@@ -109,7 +111,9 @@ contains
 
   ! flux limiter
   real(dp) function phi(r)
+
     implicit none
+
     real(dp), intent(in) :: r
 
     phi = 0d0
@@ -124,7 +128,9 @@ contains
 
   ! eigenvalue calc
   real(dp) function ev(v,u,c0,i,sgn,nx)
+
     implicit none
+
     real(dp), dimension(-1:nx+1), intent(inout) :: v
     real(dp), dimension(-1:nx+1,2), intent(inout) :: u
     integer, intent(in) :: i, nx
@@ -139,7 +145,9 @@ contains
   end function ev
 
   subroutine bcs(u,p,v,nx,c0)
+
     implicit none
+
     integer, intent(in) :: nx
     real(dp), intent(in) :: c0
     real(dp), dimension(-1:nx+1), intent(inout) :: p,v
