@@ -47,13 +47,13 @@ contains
         nom   = (u(i  ,j)-u(i-1,j))
         denom = (u(i+1,j)-u(i  ,j))
         ! make sure division by 0 does not happen
-        if(abs(nom).lt.1d-14)then ! nom = 0
+        if (abs(nom) < 1d-14) then ! nom = 0
           nom = 0d0
           denom = 1d0
-        elseif(nom.gt.1d-14.and.abs(denom).lt.1d-14)then ! nom > 0 => r = \inf
+        elseif (nom > 1d-14 .and. abs(denom) < 1d-14) then ! nom > 0 => r = \inf
           nom = 1d14
           denom = 1d0
-        elseif(nom.lt.-1d-14.and.abs(denom).lt.1d-14)then ! nom < 0 => r = 0
+        elseif (nom < -1d-14 .and. abs(denom) < 1d-14) then ! nom < 0 => r = 0
           nom = -1d14
           denom = 1d0
         end if
@@ -62,13 +62,13 @@ contains
         nom   = (u(i-1,j)-u(i-2,j))
         denom = (u(i  ,j)-u(i-1,j))
         ! make sure division by 0 does not happen
-        if(abs(nom).lt.1d-14)then
+        if (abs(nom) < 1d-14) then
           nom = 0d0
           denom = 1d0
-        elseif(nom.gt.1d-14.and.abs(denom).lt.1d-14)then
+        elseif (nom > 1d-14 .and. abs(denom) < 1d-14) then
           nom = 1d14
           denom = 1d0
-        elseif(nom.lt.-1d-14.and.abs(denom).lt.1d-14)then
+        elseif (nom < -1d-14.and.abs(denom) < 1d-14) then
           nom = -1d14
           denom = 1d0
         end if
@@ -107,7 +107,7 @@ contains
 
     phi = 0d0
     ! ospre flux limiter phi(r) = \frac{1.5*(r^2+r)}{r^2+r+1}
-    if(r.gt.0d0)then
+    if (r > 0d0) then
       phi = 1.5d0*(r**2+r)/(r**2+r+1d0)
     end if
 

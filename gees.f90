@@ -102,7 +102,7 @@ program gees
   ! loop over all timesteps
   do it=1,nt
     ! list output
-    if(real(nt*lout)*0.1d0.lt.real(it))then
+    if (real(nt*lout)*0.1d0 < real(it)) then
       write(*,*) 'Calculated ', int(real(lout)*10.), '%'
       lout = lout + 1
     end if
@@ -164,7 +164,7 @@ program gees
     call bcs(u,p,v,nx,c0)
 
     ! output
-    if(abs(temps-odt*real(io,8)).lt.abs(temps+dt-odt*real(io,8)).or.it.eq.nt)then
+    if (abs(temps-odt*real(io,8)) < abs(temps+dt-odt*real(io,8)) .or. it == nt) then
       write(fname,'(i5.5,a8)') io,'.out.csv'
       open(file=fname,unit=800)
       write(800,*) 'xpos,p,rho,v'
