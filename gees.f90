@@ -4,11 +4,13 @@
 !
 !=====================================================
 !
-! Written 2012 by Arno Mayrhofer (www.amconception.de)
+! Written 2012-2015 by Arno Mayrhofer
+! Homepage: www.amconception.de
+! Github: https://github.com/Azrael3000/gees
 !
 !=====================================================
 !
-! Copyright 2012 Arno Mayrhofer
+! Copyright 2012-2015 Arno Mayrhofer
 ! This program is licensed under the GNU General Public License.
 !
 ! This file is part of Gees.
