@@ -1,0 +1,73 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Copyright 2012-2015 Arno Mayrhofer
+% This program is licensed under the GNU General Public License.
+%
+% This file is part of Gees.
+%
+% Gees is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% Gees is distributed in the hope that it will be useful,
+%
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with Gees.  If not, see <http://www.gnu.org/licenses/>.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{article}
+
+\usepackage{fullpage}
+\usepackage{amsmath}
+
+\newcommand{\uvec}[1]{\underline{#1}}
+\newcommand{\unabla}{\uvec{\nabla}}
+\newcommand{\umat}[1]{\uvec{\uvec{#1}}}
+\newcommand{\td}{\mbox{d}}
+
+\begin{document}
+
+\title{GEES - GPL Euler equation solver}
+\author{Arno Mayrhofer}
+
+\maketitle
+
+\section{Mathematical foundation}
+The compressible Euler equations are given in conservative form by
+\begin{equation}
+\frac{\partial \uvec{u}}{\partial t} + \unabla \cdot \uvec{F}(\uvec{u}) = 0,
+\label{e:euler}
+\end{equation}
+where $\uvec{u} = (\rho, \rho v)^T$ is the state vector with $\rho$ and $v$ being the density and velocity, respectively. As GEES is a 1-D solver, the velocity is given as a scalar. The flux variable is given as
+\begin{equation}
+\uvec{F}(\uvec{u}) = (u_2, u_2^2/u_1 + p),
+\label{e:flux}
+\end{equation}
+where $p$ is the pressure which is linked to the density via the equation of state, given as
+\begin{equation}
+p = \frac{c_0^2 \rho_0}{\gamma}\left[ \left(\frac{\rho}{\rho_0} \right)^\gamma - 1\right],
+\label{e:eos}
+\end{equation}
+where $c_0$ is the speed of sound, $\rho_0$ is the reference density and $\gamma$ is a coefficient taken to be 7 in the case of water as fluid.
+\\
+The flux Jacobian is given as
+\begin{equation}
+\frac{\td \uvec{F}}{\td \uvec{u}} =
+\begin{pmatrix}
+0 & 1 \\
+-u_2^2/u_1^2 + c_0^2 (u_1/\rho_0)^{\gamma-1} & 2 u_2/u_1
+\end{pmatrix}.
+\label{e:jacobian}
+\end{equation}
+The eigenvalues of this matrix are given as
+\begin{equation}
+a^\pm = u_2/u_1 \pm c_0(u_1/\rho_0)^{(\gamma-1)/2}.
+\label{e:ev}
+\end{equation}
+
+\end{document}
