@@ -2,3 +2,8 @@
 *.mod
 *.o
 gees
+*.aux
+*.bbl
+*.blg
+*.log
+*.pdf
