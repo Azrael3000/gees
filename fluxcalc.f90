@@ -162,8 +162,8 @@ contains
 
     ! calculate root of characteristic equation
 
-    ! \lambda = 0.5*(3*v \pm sqrt{5v^2+4c0^2(\frac{\rho}{\rho_0})^{xi-1}})
-    ev = 0.5d0*(3d0*v(i)+sgn*sqrt(5d0*v(i)**2+4d0*c0**2*(u(i,1)/1d3)**6))
+    ! \lambda = v \pm c_0 (\frac{\rho}{\rho_0})^{(xi-1)/2}
+    ev = v(i) + sgn*c_0*(u(i,1)/1d3)**3
 
     return
   end function ev
