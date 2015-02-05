@@ -50,23 +50,23 @@ where $\uvec{u} = (\rho, \rho v)^T$ is the state vector with $\rho$ and $v$ bein
 \end{equation}
 where $p$ is the pressure which is linked to the density via the equation of state, given as
 \begin{equation}
-p = \frac{c_0^2 \rho_0}{\gamma}\left[ \left(\frac{\rho}{\rho_0} \right)^\gamma - 1\right],
+p = \frac{c_0^2 \rho_0}{\xi}\left[ \left(\frac{\rho}{\rho_0} \right)^\xi - 1\right],
 \label{e:eos}
 \end{equation}
-where $c_0$ is the speed of sound, $\rho_0$ is the reference density and $\gamma$ is a coefficient taken to be 7 in the case of water as fluid.
+where $c_0$ is the speed of sound, $\rho_0$ is the reference density and $\xi$ is a coefficient taken to be 7 in the case of water as fluid.
 \\
 The flux Jacobian is given as
 \begin{equation}
 \frac{\td \uvec{F}}{\td \uvec{u}} =
 \begin{pmatrix}
 0 & 1 \\
--u_2^2/u_1^2 + c_0^2 (u_1/\rho_0)^{\gamma-1} & 2 u_2/u_1
+-u_2^2/u_1^2 + c_0^2 (u_1/\rho_0)^{\xi-1} & 2 u_2/u_1
 \end{pmatrix}.
 \label{e:jacobian}
 \end{equation}
 The eigenvalues of this matrix are given as
 \begin{equation}
-a^\pm = u_2/u_1 \pm c_0(u_1/\rho_0)^{(\gamma-1)/2}.
+a^\pm = u_2/u_1 \pm c_0(u_1/\rho_0)^{(\xi-1)/2}.
 \label{e:ev}
 \end{equation}
 
