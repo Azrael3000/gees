@@ -19,4 +19,8 @@ GEES (pronounced like cheese because it's yummy) solves the Euler equations in 1
 
 -------------------------------
 
+There is also a LaTeX document to be found in the *doc* folder that shows the gory mathematical details.
+
+-------------------------------
+
 Before putting the code on github it was (and still is) available on my [homepage](http://sci.amconception.de/index.php?nav=gees). I put the code up for review on [CodeReview](http://codereview.stackexchange.com/questions/10326).
