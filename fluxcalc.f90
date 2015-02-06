@@ -96,13 +96,14 @@ contains
         ! u^r_{i-1/2} = u_i + 0.5*phi(r_i)*(u_{i+1}-u_i)
         ur(j) = u(i,j)  -0.5d0*phi(ri  )*(u(i+1,j)-u(i  ,j))
       end do
-      ! calculate eigenvalues of \frac{\partial F}{\parial u} at u_{i-1}
-      lam(1) = ev(v,u,c0,i-1, 1d0,nx)
-      lam(2) = ev(v,u,c0,i-1,-1d0,nx)
-      ! calculate eigenvalues of \frac{\partial F}{\parial u} at u_i
-      lam(3) = ev(v,u,c0,i  , 1d0,nx)
-      lam(4) = ev(v,u,c0,i  ,-1d0,nx)
-      ! max spectral radius (= max eigenvalue of dF/du) of flux Jacobians (u_i, u_{i-1})
+      ! calculate eigenvalues of \frac{\partial F}{\parial u} at u^l_{i-1/2}
+      lam(1) = ev(ul,c0, 1d0)
+      lam(2) = ev(ul,c0,-1d0)
+      ! calculate eigenvalues of \frac{\partial F}{\parial u} at u^r_{i-1/2}
+      lam(3) = ev(ur,c0, 1d0)
+      lam(4) = ev(ur,c0,-1d0)
+      ! local propagation speed =
+      ! max spectral radius (= max eigenvalue of dF/du) of flux Jacobians at (i-1/2)
       a = maxval(abs(lam),dim=1)
       ! calculate pressure via equation of state:
       ! p = \frac{rho_0 c0^2}{xi}*((\frac{\rho}{\rho_0})^xi-1), (xi=7, rho_0=1d3)
@@ -140,30 +141,25 @@ contains
     !  phi = (r+abs(r))/(1d0+abs(r))
   end function phi
 
-  real(dp) function ev(v,u,c0,i,sgn,nx)
+  real(dp) function ev(u,c0,sgn)
     ! Task:
-    !   Compute the eigenvalues of the jacobian
+    !   Compute the eigenvalues of the flux jacobian
     ! Input:
-    !   v    - velocity
-    !   u    - state vector
+    !   u    - state vector at midpoint (left or right approximation)
     !   c0   - speed of sound
-    !   i    - index of cell to operate on
     !   sgn  - sign of the root
-    !   nx   - number of gridpoints
     ! Output:
     !   ev   - the eigenvalue
 
     implicit none
 
-    real(dp), dimension(-1:nx+1), intent(inout) :: v
-    real(dp), dimension(-1:nx+1,2), intent(inout) :: u
-    integer, intent(in) :: i, nx
+    real(dp), dimension(2), intent(inout) :: u
     real(dp), intent(in) :: sgn, c0
 
     ! calculate root of characteristic equation
 
     ! \lambda = v \pm c_0 (\frac{\rho}{\rho_0})^{(xi-1)/2}
-    ev = v(i) + sgn*c_0*(u(i,1)/1d3)**3
+    ev = u(2)/u(1) + sgn*c_0*(u(1)/1d3)**3
 
     return
   end function ev
