@@ -159,7 +159,7 @@ contains
     ! calculate root of characteristic equation
 
     ! \lambda = v \pm c_0 (\frac{\rho}{\rho_0})^{(xi-1)/2}
-    ev = u(2)/u(1) + sgn*c_0*(u(1)/1d3)**3
+    ev = u(2)/u(1) + sgn*c0*(u(1)/1d3)**3
 
     return
   end function ev
