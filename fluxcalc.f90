@@ -1,6 +1,6 @@
 !=====================================================
 !
-! Copyright 2012-2015 Arno Mayrhofer
+! Copyright 2012-2016 Arno Mayrhofer
 ! This program is licensed under the GNU General Public License.
 !
 ! This file is part of Gees.
@@ -25,21 +25,24 @@ module mod_fluxcalc
   ! dp is for the kind definition of the reals, ensuring double precision
   integer, parameter :: dp = selected_real_kind(15, 307)
 
+  ! physical parameters
+  real(dp), parameter :: rho0 = 1d3
+  real(dp), parameter :: xi = 7d0
+
   ! public variables
   public :: dp
   ! public functions
   public :: fluxcalc, bcs
   ! private functions
-  private :: phi, ev
+  private :: phi, ev, p_eos
 
 contains
 
-  subroutine fluxcalc(u, v, f, nx, c0)
+  subroutine fluxcalc(u, f, nx, c0)
     ! Task:
     !   Compute flux at midpoints
     ! Input:
     !   u  - state vector at center
-    !   v  - velocity at center
     !   nx - number of gridpoints
     !   c0 - speed of sound
     ! Output:
@@ -48,7 +51,6 @@ contains
     implicit none
 
     integer, intent(in) :: nx
-    real(dp), dimension(-1:nx+1), intent(inout) :: v
     real(dp), dimension(-1:nx+1,2), intent(inout) :: u
     real(dp), dimension(nx,2), intent(inout) :: f
     real(dp), intent(in) :: c0
@@ -106,9 +108,8 @@ contains
       ! max spectral radius (= max eigenvalue of dF/du) of flux Jacobians at (i-1/2)
       a = maxval(abs(lam),dim=1)
       ! calculate pressure via equation of state:
-      ! p = \frac{rho_0 c0^2}{xi}*((\frac{\rho}{\rho_0})^xi-1), (xi=7, rho_0=1d3)
-      pr = 1d3*c0**2/7d0*((ur(1)/1d3)**7d0-1d0)
-      pl = 1d3*c0**2/7d0*((ul(1)/1d3)**7d0-1d0)
+      pr = p_eos(ur(1),c0)
+      pl = p_eos(ul(1),c0)
       ! calculate flux based on the Kurganov and Tadmor central scheme
       ! F_{i-1/2} = 0.5*(F(u^r_{i-1/2})+F(u^l_{i-1/2}) - a*(u^r_{i-1/2} - u^l_{i-1/2}))
       ! F_1 = rho * v = u_2
@@ -159,10 +160,31 @@ contains
     ! calculate root of characteristic equation
 
     ! \lambda = v \pm c_0 (\frac{\rho}{\rho_0})^{(xi-1)/2}
-    ev = u(2)/u(1) + sgn*c0*(u(1)/1d3)**3
+    ev = u(2)/u(1) + sgn*c0*(u(1)/rho0)**((xi-1d0)/2d0)
 
     return
   end function ev
+
+  real(dp) function p_eos(rho, c0)
+    ! Task:
+    !   Compute the pressure via the equation of state from the density
+    !   Formula: p = \frac{\rho_0 c_0^2}{\xi} [(\frac{\rho}{\rho_0})^\xi - 1],
+    !   where \rho_0 (=1000) is the reference density, c_0 the speed of sound and \xi the
+    !   polytropic index (=7 for water).
+    ! Input:
+    !   rho   - density
+    !   c0    - speed of sound
+    ! Output:
+    !   p     - pressure
+
+    implicit none
+
+    real(dp), intent(in) :: rho, c0
+
+    p_eos = rho0*c0**2d0/xi*((rho/rho0)**xi-1d0)
+
+    return
+  end function p_eos
 
   subroutine bcs(u,p,v,nx,c0)
     ! Task:
@@ -190,7 +212,7 @@ contains
       ! v = u_2 / u_1
       v(i) = u(i,2)/u(i,1)
       ! p = \frac{rho_0 c0^2}{xi}*((\frac{\rho}{\rho_0})^xi-1), (xi=7, rho_0=1d3)
-      p(i) = 1d3*c0**2/7d0*((u(i,1)/1d3)**7d0-1d0)
+      p(i) = p_eos(u(i,1),c0)
     end do
 
     ! calculate boundary conditions
@@ -202,10 +224,10 @@ contains
     u(nx,1) = (4d0*u(nx-1,1)-u(nx-2,1))/3d0
     u(nx+1,1) = u(nx-1,1)
     ! for p: dp/dn = 0 (thus can use EOS)
-    p(0) = 1d3*c0**2/7d0*((u(0,1)/1d3)**7d0-1d0)
-    p(-1) = 1d3*c0**2/7d0*((u(-1,1)/1d3)**7d0-1d0)
-    p(nx) = 1d3*c0**2/7d0*((u(nx,1)/1d3)**7d0-1d0)
-    p(nx+1) = 1d3*c0**2/7d0*((u(nx+1,1)/1d3)**7d0-1d0)
+    p(0) = p_eos(u(0,1),c0)
+    p(-1) = p_eos(u(-1,1),c0)
+    p(nx) = p_eos(u(nx,1),c0)
+    p(nx+1) = p_eos(u(nx+1,1),c0)
     ! for v: v = 0 using second order extrapolation
     v(0) = 0d0
     v(-1) = v(2)-3d0*v(1)

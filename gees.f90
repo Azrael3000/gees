@@ -1,16 +1,16 @@
 !=====================================================
 !
-! GEES - GPL Euler equation solver
+! GEES - GPL Euler Equation Solver
 !
 !=====================================================
 !
-! Written 2012-2015 by Arno Mayrhofer
+! Written 2012-2016 by Arno Mayrhofer
 ! Homepage: www.amconception.de
 ! Github: https://github.com/Azrael3000/gees
 !
 !=====================================================
 !
-! Copyright 2012-2015 Arno Mayrhofer
+! Copyright 2012-2016 Arno Mayrhofer
 ! This program is licensed under the GNU General Public License.
 !
 ! This file is part of Gees.
@@ -45,14 +45,41 @@ program gees
 
   implicit none
 
-  real(dp), dimension(:),allocatable :: p,v
+  ! output buffers
+  !   p - pressure
+  !   v - velocity
+  real(dp), dimension(:), allocatable :: p,v
+  ! work buffers
+  !   u     - state vector
+  !   f     - flux vector
+  !   utild - temporary state vector
+  !   uold  - state vector from previous time step
   real(dp), dimension(:,:), allocatable :: u,f, utild, uold
-  real(dp) :: temps, dt, tend, dx, odt, pi, c0
+  ! floating point variables
+  !   time  - simulation time
+  !   dt    - time step size
+  !   tend  - maximum simulation time
+  !   dx    - grid spacing
+  !   odt   - output time step size
+  !   c0    - speed of sound
+  real(dp) :: time, dt, tend, dx, odt, c0
+  ! constants
+  !   pi    - 3.1415927...12409435094120938202... or so
+  real(dp), parameter :: pi = acos(-1d0)
+  ! integer variables
+  !   i     - iterator variable
+  !   nt    - number of time steps
+  !   it    - current time step
+  !   nx    - number of gridpoints
+  !   io    - current output index
+  !   lout  - current status output index
   integer :: i, nt, it, nx, io, lout
+  ! character variable
+  !   fname - file name for output
   character(len=13) :: fname
 
   write(*,*) 'Welcome to GEES'
-  write(*,*) 'your friendly GPL Euler Equation solver'
+  write(*,*) 'your friendly GPL Euler Equation Solver'
   write(*,*) 'written 2012 by Arno Mayrhofer (www.amconception.de)'
   write(*,*)
   write(*,*) 'Number of grid points:'
@@ -74,8 +101,7 @@ program gees
   ! number of time-steps
   nt = int(tend/dt+1d-14)
   ! grid size
-  dx = 1D0/real(nx,8)
-  pi = acos(-1d0)
+  dx = 1d0/real(nx,8)
   ! list ouput index
   lout = 1
 
@@ -92,7 +118,7 @@ program gees
   ! file output index
   io = 0
   ! simulation time
-  temps = 0d0
+  time = 0d0
 
   ! output
   write(fname,'(i5.5,a8)') io,'.out.csv'
@@ -111,12 +137,12 @@ program gees
       write(*,*) 'Calculated ', int(real(lout)*10.), '%'
       lout = lout + 1
     end if
-    temps = temps + dt
+    time = time + dt
     uold = u
 
     ! First Runge-Kutta step
     ! calculate flux at mid points using u
-    call fluxcalc(u,v,f,nx,c0)
+    call fluxcalc(u,f,nx,c0)
     do i=1,nx-1
       ! calc k1 = -dt/dx(f(u,i+1/2) - f(u,i-1/2))
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
@@ -130,7 +156,7 @@ program gees
 
     ! Second Runge-Kutta step
     ! calculate flux at mid points using utild
-    call fluxcalc(utild,v,f,nx,c0)
+    call fluxcalc(utild,f,nx,c0)
     do i=1,nx-1
       ! calc k2 = -dt/dx(f(utild,i+1/2) - f(utild,i-1/2))
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
@@ -144,7 +170,7 @@ program gees
 
     ! Third Runge-Kutta step
     ! calculate flux at mid points using utild
-    call fluxcalc(utild,v,f,nx,c0)
+    call fluxcalc(utild,f,nx,c0)
     do i=1,nx-1
       ! calc k3 = -dt/dx(f(utild,i+1/2) - f(utild,i-1/2))
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
@@ -158,7 +184,7 @@ program gees
 
     ! Fourth Runge-Kutta step
     ! calculate flux at mid points using utild
-    call fluxcalc(utild,v,f,nx,c0)
+    call fluxcalc(utild,f,nx,c0)
     do i=1,nx-1
       ! calc k4 = -dt/dx(f(utild,i+1/2) - f(utild,i-1/2))
       utild(i,:) = -dt/dx*(f(i+1,:)-f(i,:))
@@ -169,7 +195,7 @@ program gees
     call bcs(u,p,v,nx,c0)
 
     ! output
-    if (abs(temps-odt*real(io,8)) < abs(temps+dt-odt*real(io,8)) .or. it == nt) then
+    if (abs(time-odt*real(io,8)) < abs(time+dt-odt*real(io,8)) .or. it == nt) then
       write(fname,'(i5.5,a8)') io,'.out.csv'
       open(file=fname,unit=800)
       write(800,*) 'xpos,p,rho,v'
