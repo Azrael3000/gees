@@ -1,6 +1,6 @@
 #=====================================================
 #
-# Copyright 2012-2015 Arno Mayrhofer
+# Copyright 2012-2016 Arno Mayrhofer
 # This program is licensed under the GNU General Public License.
 #
 # This file is part of Gees.
@@ -20,15 +20,34 @@
 #
 #=====================================================
 
+# Compiler flags
 FFLAGS = -Wall -fbacktrace -g -pg -O3
+# Name of the executable
 TARGET = gees
+# Compiler
+COMPILER = gfortran
+# All *.f90 files
+F90FILES = $(wildcard *.f90)
+# All object files created by compiling the *.f90 files
+OFILES = $(patsubst %.f90, %.o, $(F90FILES))
+
+# Make sure that clean is run every time it's called
+.PHONY: clean
+
+# Main make target is the executable
 all: $(TARGET)
 
-$(TARGET): fluxcalc.o $(TARGET).o
-	gfortran $(FFLAGS) -o $(TARGET) fluxcalc.o $(TARGET).o
+# To build the executable we require all object files
+$(TARGET): $(OFILES)
+# Linking the object files to create the target executable
+	$(COMPILER) $(FFLAGS) -o $(TARGET) $(OFILES)
 
+# Recipe how to build object files, which require the *.f90 files
 %.o: %.f90
-	  gfortran $(FFLAGS) -c $< -o $@
+# Compiling one f90 file ($<) to create the corresponding .o file ($@)
+	$(COMPILER) $(FFLAGS) -c $< -o $@
 
+# Cleaning the workspace
 clean:
-	rm -f *.o *.mod $(TARGET)
+# Remove all object and *.mod files as well as the executable
+	rm -f $(OFILES) *.mod $(TARGET)
