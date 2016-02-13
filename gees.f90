@@ -75,21 +75,10 @@ program gees
   !   io    - current output index
   !   lout  - current status output index
   integer :: i, nt, it, nx, io, lout
-  ! character variable
-  !   fname - file name for output
-  character(len=13) :: fname
 
   call get_input(nx, tend, dt, odt, c0)
 
-  ! number of time-steps
-  nt = int(tend/dt+1d-14)
-  ! grid size
-  dx = 1d0/real(nx,8)
-  ! list ouput index
-  lout = 0
-
-  allocate(p(-1:nx+1),v(-1:nx+1),f(nx,2),u(-1:nx+1,2), &
-  utild(-1:nx+1,2), uold(-1:nx+1,2))
+  call initialize_simulation(tend, dt, nx, nt, dx, lout, io, time, p, v, f, u, utild, uold)
 
   ! init
   do i=1,nx-1
@@ -98,20 +87,9 @@ program gees
   end do
   ! set p,v from u and calcuate boundary values at bdry and ghost cells
   call bcs(u,p,v,nx,c0)
-  ! file output index
-  io = 0
-  ! simulation time
-  time = 0d0
 
   ! output
-  write(fname,'(i5.5,a8)') io,'.out.csv'
-  open(file=fname,unit=800)
-  write(800,*) 'xpos,p,rho,v'
-  do i=-1,nx+1
-    write(800,'(4(a1,e20.10))') ' ', real(i,8)/real(nx,8),',', p(i),',', u(i,1),',', v(i)
-  end do
-  close(800)
-  io = io+1
+  call write_output(time, odt, io, dt, it, nt, nx, p, u, v)
 
   ! loop over all timesteps
   do it=1,nt
@@ -176,16 +154,7 @@ program gees
     call bcs(u,p,v,nx,c0)
 
     ! output
-    if (abs(time-odt*real(io,8)) < abs(time+dt-odt*real(io,8)) .or. it == nt) then
-      write(fname,'(i5.5,a8)') io,'.out.csv'
-      open(file=fname,unit=800)
-      write(800,*) 'xpos,p,rho,v'
-      do i=-1,nx+1
-        write(800,'(4(a1,e20.10))') ' ', real(i,8)/real(nx,8),',', p(i),',', u(i,1),',', v(i)
-      end do
-      close(800)
-      io = io + 1
-    end if
+    call write_output(time, odt, io, dt, it, nt, nx, p, u, v)
   end do
 
   write(*,*) 'Calculation finished. Goodbye.'
