@@ -49,5 +49,5 @@ $(TARGET): $(OFILES)
 
 # Cleaning the workspace
 clean:
-# Remove all object and *.mod files as well as the executable
-	rm -f $(OFILES) *.mod $(TARGET)
+# Remove all object and *.mod files as well as the executable and the performance file
+	rm -f $(OFILES) *.mod $(TARGET) gmon.out
