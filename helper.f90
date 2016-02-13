@@ -64,8 +64,32 @@ contains
     write(*,*) 'Speed of sound:'
     read(*,*) c0
     write(*,*) c0
+    write(*,*)
 
   end subroutine get_input
+
+  subroutine show_progress(nt, it, lout)
+    ! Task:
+    !   Write percentage of completion (in 10% steps) to the command line (stdout)
+    ! Input:
+    !   nt    - Total number of iterations
+    !   it    - Current iteration
+    !   lout  - Current status output index (from 0 to 10)
+    ! Output:
+    !   lout  - Next status output index
+
+    implicit none
+
+    integer, intent(in) :: nt, it
+    integer, intent(inout) :: lout
+
+    ! list output
+    if (real(nt*lout)*0.1d0 < real(it)) then
+      write(*,*) 'Calculated ', int(real(lout)*10.), '%'
+      lout = lout + 1
+    end if
+
+  end subroutine show_progress
 
 
 end module mod_helper

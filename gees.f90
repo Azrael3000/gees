@@ -86,7 +86,7 @@ program gees
   ! grid size
   dx = 1d0/real(nx,8)
   ! list ouput index
-  lout = 1
+  lout = 0
 
   allocate(p(-1:nx+1),v(-1:nx+1),f(nx,2),u(-1:nx+1,2), &
   utild(-1:nx+1,2), uold(-1:nx+1,2))
@@ -115,11 +115,9 @@ program gees
 
   ! loop over all timesteps
   do it=1,nt
-    ! list output
-    if (real(nt*lout)*0.1d0 < real(it)) then
-      write(*,*) 'Calculated ', int(real(lout)*10.), '%'
-      lout = lout + 1
-    end if
+
+    call show_progress(nt, it, lout)
+
     time = time + dt
     uold = u
 
