@@ -41,6 +41,7 @@
 
 program gees
 
+  use mod_helper
   use mod_fluxcalc
 
   implicit none
@@ -78,25 +79,7 @@ program gees
   !   fname - file name for output
   character(len=13) :: fname
 
-  write(*,*) 'Welcome to GEES'
-  write(*,*) 'your friendly GPL Euler Equation Solver'
-  write(*,*) 'written 2012 by Arno Mayrhofer (www.amconception.de)'
-  write(*,*)
-  write(*,*) 'Number of grid points:'
-  read(*,*) nx
-  write(*,*) nx
-  write(*,*) 'End time:'
-  read(*,*) tend
-  write(*,*) tend
-  write(*,*) 'Time-step size'
-  read(*,*) dt
-  write(*,*) dt
-  write(*,*) 'Output dt:'
-  read(*,*) odt
-  write(*,*) odt
-  write(*,*) 'Speed of sound:'
-  read(*,*) c0
-  write(*,*) c0
+  call get_input(nx, tend, dt, odt, c0)
 
   ! number of time-steps
   nt = int(tend/dt+1d-14)
